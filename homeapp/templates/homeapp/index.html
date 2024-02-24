@@ -1,0 +1,137 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.1.0/remixicon.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>{% block title %}Home{% endblock %}</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <div>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="/home" class="nav-link">Home</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul class="navbar-nav align-items-center">
+                    {% if user.is_authenticated %}
+                    <span class="text-white welcome-tag">Bem-vindo {{user.fname}}</span>
+                    <form action="{% url 'logout' %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger ml-3">Logout</button>
+                    </form>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="/login" class="nav-link">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/register" class="nav-link">Registar</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% for message in messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Popup:</strong> {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+
+    <div class="container-fluid my-4">
+        {% block content %}
+            <div class="row">
+                <div class="col text-center">
+                    <h1>LISTA DE TAREFAS</h1>
+                    <table class="table table-striped table-dark">
+                        <thead>
+                            <tr>
+                            <th scope="col">Tarefa</th>
+                            <th scope="col">Criador</th>
+                            <th scope="col">Data Criação</th>
+                            <th scope="col" style="text-align: center">#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in tasks %}
+                                <tr>
+                                    <td>{{ task.tname }}</td>
+                                    <td>{{ task.user.fname }}</td>
+                                    <td>{{ task.tdate }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'delete_task' task.id %}"><span><i class="ri-close-line"></i></span></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <form action="{% url 'create_task' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" class="form-control" name="task-name" placeholder="Tarefa">
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-success px-3"><i class="ri-add-line"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col text-center">
+                    <h1>LISTA DE COMPRAS</h1>
+                    <table class="table table-striped table-dark">
+                        <thead>
+                            <tr>
+                            <th scope="col">Produto</th>
+                            <th scope="col">Adicionado</th>
+                            <th scope="col" style="text-align: center">#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for prod in prods %}
+                                <tr>
+                                    <td>{{ prod.pname }}</td>
+                                    <td>{{ prod.user.fname }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'delete_prod' prod.id %}"><span><i class="ri-close-line"></i></span></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <form action="{% url 'create_prod' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" class="form-control" name="prod-name" placeholder="Produto">
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-success px-3"><i class="ri-add-line"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+</html>

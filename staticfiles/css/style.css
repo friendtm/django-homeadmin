@@ -1,0 +1,23 @@
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.table{
+    cursor: pointer;
+}
+
+.table span{
+    font-size: 1.25rem;
+}
+.table a{
+    text-decoration: none;
+    color: #ccc;
+    transition: all 0.3s ease;
+}
+
+.table a:hover{
+    color: #bf2c24;
+}
+
